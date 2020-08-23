@@ -417,4 +417,6 @@ with open("rainbird.json", "r") as fh:
 flerp.scheduleDaemon.addSchedule(schedule)
 flerp.scheduleDaemon.addSchedule(schedule)
 
+flerp.scheduleDaemon.listSchedules()
+
 flerp.pinDaemon.shutdown()
