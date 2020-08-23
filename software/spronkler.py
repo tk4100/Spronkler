@@ -306,7 +306,7 @@ class Spronkler():
                         j_newend = newruntimes[j][1]
                         
                         # actually check
-                        if (j_newstart > i_start and j_newstart < i_end) or (j_newend > i_start and j_newend < i_end):
+                        if (j_newstart >= i_start and j_newstart < i_end) or (j_newend > i_start and j_newend <= i_end):
                             print(j_newstart, j_newend, i_start, i_end)
                             conflict_detected = True
                             conflicting_schedule = schedule
@@ -434,7 +434,7 @@ with open("rainbird2.json", "r") as fh:
     
 flerp.scheduleDaemon.addSchedule(schedule)
 
-print("Currently active schedles:")
+print("Currently active schedules:")
 flerp.scheduleDaemon.listSchedules()
 
 flerp.pinDaemon.shutdown()
