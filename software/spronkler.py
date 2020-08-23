@@ -275,7 +275,6 @@ class Spronkler():
             conflict_detected = False
             for schedule in self.schedules:
                 if conflict_detected == True:
-                    conflicting_schedule = schedule
                     break
                     
                 # check if the run windows overlap.
@@ -312,6 +311,7 @@ class Spronkler():
                         # actually check
                         if (j_newstart > i_start and j_newstart < i_end) or (j_newend > i_start or j_newend < i_end):
                             conflict_detected = True
+                            conflicting_schedule = schedule
                             
                         # advance whichever schedule list is appropriate
                         if j_newstart > i_start:
