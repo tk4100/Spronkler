@@ -339,7 +339,7 @@ class Spronkler():
                 # add a schedule
                 elif isinstance(msg, self.MsgAddSchedule):
                     if self.__conflictCheck(msg.schedule) == False:
-                        self.schedules.add(msg.schedule)
+                        self.schedules.append(msg.schedule)
                         msg = self.MsgACK()
                        
                 # Remove a schedule
