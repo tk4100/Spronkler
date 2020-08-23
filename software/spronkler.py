@@ -325,7 +325,7 @@ class Spronkler():
             
             # the end, finally
             if conflict_detected:
-                return self.MsgNAK("Schedule conflicts with existing schedule '{}'!".format(conflicting_schedule['name']))
+                return self.MsgNAK("New schedule '{}' conflicts with existing schedule '{}'!".format(newschedule['name'], conflicting_schedule['name']))
             else:
                 return self.MsgACK()
                         
