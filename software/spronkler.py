@@ -331,17 +331,17 @@ class Spronkler():
                 # switch on relevant message types
                 # ping
                 if isinstance(msg, self.MsgPing):
-                    print("pinDaemon: Received ping")
+                    print("scheduleDaemon: Received ping")
                     msg = self.MsgPong()
 
                 # add a schedule
-                if isinstance(msg, self.MsgAddSchedule):
+                elif isinstance(msg, self.MsgAddSchedule):
                     if self.__conflictCheck(msg.schedule) == False:
                         self.schedules.add(msg.schedule)
                         msg = self.MsgACK()
                        
                 # Remove a schedule
-                if isinstance(msg, self.MsgDeleteSchedule):
+                elif isinstance(msg, self.MsgDeleteSchedule):
                     i = 0
                     found = False
                     for schedule in self.schedules:
@@ -355,7 +355,7 @@ class Spronkler():
                             
 
                 # list active schedules
-                if isinstance(msg, self.MsgListSchedules):
+                elif isinstance(msg, self.MsgListSchedules):
                     msg = self.MsgACK(reason=self.schedules)
 
                 # Fallthrough
