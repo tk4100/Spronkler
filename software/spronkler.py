@@ -257,7 +257,7 @@ class Spronkler():
             newstart = datetime.datetime.strptime(newschedule["start_time"], self.dateformat)
             newend = datetime.datetime.strptime(newschedule["end_time"], self.dateformat)
             if newend < newstart:
-                newend + newend + datetime.timedelta(days=365)
+                newend = newend + datetime.timedelta(days=365)
         
             # count up the total runtime for the new schedule
             newtotalruntime = 0
