@@ -401,7 +401,7 @@ class Spronkler():
             msg = self.MsgListSchedules()
 
             sock.send_pyobj(msg)
-            data = sock.recv_pyobj()
+            msg = sock.recv_pyobj()
             
             if isinstance(msg, self.MsgNAK):
                 print("Failed to list schedules!: {}".format(msg.reason))
