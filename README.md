@@ -12,26 +12,30 @@ inproc ZMQ. One of the aspects I wanted to explore was completely self-contained
 sanity in its own domain.  No matter what crazy commands are received via the ZMQ interface, a given thread should behave
 safely.
 
-## Pin Daemon
+## Controller
+
+### Pin Daemon
 
 Pretty simple here, controls actual GPIO outputs, and is responsible for preventing multiple channels from running at
 once, as well as enforcing guard intervals etc.
 
-## Schedule Daemon
+### Schedule Daemon
 
 Handles Schduling, with a total time-awareness of 365 days.  The plan is to have this daemon accept JSON objects
 that represent a schedule, compare this new schedule with all other currently active schedules, reject the new
 schedule if needed with a helpful message (ie, "conflicts with schedule 9, 'Rosemary dripline").  Similar logic
 is required for activating/deactivating schedules.
 
-Example schedule object.  It runs from May 1st 2020, and repeats every 24 hours until October 1st. Looking at
-the schedule section, channel 1 runs for 5 minutes, channel 2 for 4 minutes, and so on.
+Example schedule object.  It runs from May 1st, and repeats every 24 hours until October 1st.  The date is recorded in iso
+format, but the year will be ignored. Looking at the schedule section, channel 1 runs for 5 minutes, channel 2 for 4 minutes,
+and so on.
 ```json
 {
    "name":"Demo Schedule",
-   "start_time":"2020-05-01T06:00:00",
-   "end_time":"2020-10-01T20:00:00",
+   "start_time":"05-01T06:00:00",
+   "end_time":"10-01T20:00:00",
    "interval_minutes":1440,
+   "enabled":"true",
    "schedule":{
       "1":5,
       "2":4,
@@ -47,3 +51,7 @@ the schedule section, channel 1 runs for 5 minutes, channel 2 for 4 minutes, and
 }
 ```
 
+### API Daemon
+
+The connection point to the webUI.  Probably will start out life as a simple bridge with one inproc ZMQ endpoint, and one
+ipc or tcp endpoint.

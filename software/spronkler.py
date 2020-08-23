@@ -43,7 +43,8 @@ class Spronkler():
                 self.reason = reason
 
         class MsgACK():
-            pass
+            def __init__(self, reason=""):
+                self.reason = reason
 
         def ping(self):
             sock = self.zmqctx.socket(zmq.REQ)
@@ -215,9 +216,13 @@ class Spronkler():
     # Pin Controller Daemon
     class ScheduleDaemon(Daemon):
 
-        class MsgEnable():
-            def __init__(self, pinmap):
-                self.pinmap = pinmap
+        class MsgListSchedules():
+            pass
+        
+        # the schedule object is presumed deserialized at this point
+        class MsgAddSchedule():
+            def __init__(self, schedule):
+                self.schedule = schedule
 
         class MsgDisable():
             pass
@@ -230,11 +235,85 @@ class Spronkler():
             self.__daemonThread = threading.Thread(name=self.threadname, target=self.__daemonThread)
             self.max_active_channels = 1
 
+            # some tunables
+            self.dateformat = '%m-%dT%H:%M:%S'
+
             #start the thread
             self.__daemonThread.start()
 
             #init
             self.init(pinmap)
+
+        # validates whether or not a new schedule will conflict with *any* schedule currently enabled.
+        def conflictCheck(self, newschedule):
+            # unroll the new schedule's start and end times
+            newstart = datetime.datetime.strptime(newschedule["start_time"], self.dateformat)
+            newend = datetime.datetime.strptime(newschedule["end_time"], self.dateformat)
+            if newend < newstart:
+                newend + newend + datetime.timedelta(days=365)
+        
+            # count up the total runtime for the new schedule
+            newtotalruntime = 0
+            for channel in newschedule['schedule'].keys():
+                newtotalruntime += int(newschedule['schedule'][channel])
+        
+            # generate a list of runtimes for the new schedule
+            newruntimes = []
+            newruntimes.append((newstart, newstart + datetime.timedelta(minutes=newtotalruntime))
+            while newruntimes[-1][0] + datetime.timedelta(minutes=newschedule['interval_minutes']) < newstart + datetime.timedelta(days=365):
+                nextstart = newruntimes[-1][0] + datetime.timedelta(minutes=newschedule['interval_minutes'])
+                nextend = nextstart + datetime.timedelta(minutes=newtotalruntime)
+                newruntimes.append((nextstart, nextend))
+        
+            conflict_detected = False
+            for schedule in self.schedules:
+                # check if the run windows overlap.
+                start = datetime.datetime.strptime(schedule["start_time"], self.dateformat)
+                end = datetime.datetime.strptime(schedule["end_time"], self.dateformat)
+                if end < start:
+                    end = end + datetime.timedelta(days=365)
+                    
+                # if the run dates of the schedules overlap, continue checking for per-channel conflicts.  If not
+                # we can assume there are no channel conflicts....obviously.
+                if (newstart > start and newstart < end) or (newend > start or newend < end):
+                    # get the total runtime for this schedule
+                    totalruntime = 0
+                    for channel in schedule.keys():
+                        totalruntime += int(schedule['schedule'][channel])
+                        
+                    # generate a list of start and end times for the new schedule
+                    runtimes = []
+                    runtimes.append((start, start + datetime.timedelta(minutes=totalruntime))
+                    while runtimes[-1][0] + datetime.timedelta(minutes=schedule['interval_minutes']) < start + datetime.timedelta(days=365):
+                        nextstart = runtimes[-1][0] + datetime.timedelta(minutes=schedule['interval_minutes'])
+                        nextend = nextstart + datetime.timedelta(minutes=totalruntime)
+                        runtimes.append((nextstart, nextend))
+                        
+                    #check for running conflicts
+                    i = 0
+                    j = 0
+                    while i < len(runtimes) and j < len(newruntimes):
+                        i_start = runtimes[i][0]
+                        i_end = runtimes[i][1]
+                        j_newstart = newruntimes[j][0]
+                        j_newend = newruntimes[j][1]
+                        
+                        # actually check
+                        if (j_newstart > i_start and j_newstart < i_end) or (j_newend > i_start or j_newend < i_end):
+                            conflict_detected = True
+                            
+                        # advance whichever schedule list is appropriate
+                        if j_newstart > i_start:
+                            i += 1
+                        else:
+                            j += 1
+                            
+            
+            # the end, finally
+            return conflict_detected
+                        
+                    
+                 
 
         # Daemon thread
         def __daemonThread(self):
@@ -250,8 +329,29 @@ class Spronkler():
                     print("pinDaemon: Received ping")
                     msg = self.MsgPong()
 
+                # add a schedule
+                if isinstance(msg, self.MsgAddSchedule):
+                    if self.conflictCheck(msg.schedule) == False:
+                        self.schedules.add(msg.schedule)
+                        msg = self.MsgACK()
+                       
+                # Remove a schedule
+                if isinstance(msg, self.MsgDeleteSchedule):
+                    i = 0
+                    found = False
+                    for schedule in self.schedules:
+                        if schedule["name"] == msg.name:
+                            found = True
+                            del(self.schedules[i])
+                            msg = self.MsgACK()
+                        i += 1
+                    if found == False:
+                        msg = self.MsgNAK("No schedule with name '{}' found.".format(msg.name))
+                            
 
-                ########### DO SHIT
+                # list active schedules
+                if isinstance(msg, self.MsgListSchedules():
+                    msg = self.MsgACK(reason=self.schedules)
 
                 # Fallthrough
                 else:
