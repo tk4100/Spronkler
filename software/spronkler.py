@@ -395,7 +395,7 @@ class Spronkler():
             if isinstance(msg, self.MsgNAK):
                 print("Failed to list schedules!: {}".format(msg.reason))
             else:
-                print(json.dumps(data.reason, sort_keys=True, indent=4, separators=(',', ': '))
+                print(json.dumps(data.reason, sort_keys=True, indent=4, separators=(',', ': ')))
 
             sock.close()
 
