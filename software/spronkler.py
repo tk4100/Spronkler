@@ -375,6 +375,9 @@ class Spronkler():
 
             sock.send_pyobj(msg)
             data = sock.recv_pyobj()
+            
+            if isinstance(msg, self.MsgNAK):
+                print("Failed to set schedule: {}".format(msg.reason))
 
             sock.close()
 
