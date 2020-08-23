@@ -380,8 +380,8 @@ class Spronkler():
 
                     # reply
                     sock.send_pyobj(msg)
-                except IndexError:
-                    pass
+                except zmq.error.Again:
+                    print("Timeout")
                     # actually send pin commands
 
         def addSchedule(self, schedule):
