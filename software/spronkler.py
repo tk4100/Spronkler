@@ -274,6 +274,10 @@ class Spronkler():
         
             conflict_detected = False
             for schedule in self.schedules:
+                if conflict_detected == True:
+                    conflicting_schedule = schedule
+                    break
+                    
                 # check if the run windows overlap.
                 start = datetime.datetime.strptime(schedule["start_time"], self.dateformat)
                 end = datetime.datetime.strptime(schedule["end_time"], self.dateformat)
@@ -317,7 +321,10 @@ class Spronkler():
                             
             
             # the end, finally
-            return conflict_detected
+            if conflict_detected:
+                return self.MsgNAK("Schedule conflicts with existing schedule '{}'!".format(conflicting_schedule['name']))
+            else:
+                return self.MsgACK()
                         
                     
                  
@@ -338,9 +345,10 @@ class Spronkler():
 
                 # add a schedule
                 elif isinstance(msg, self.MsgAddSchedule):
-                    if self.__conflictCheck(msg.schedule) == False:
+                    confict_result = self.__conflictCheck(msg.schedule)
+                    if isinstance(conflict_result, self.MsgACK):
                         self.schedules.append(msg.schedule)
-                        msg = self.MsgACK()
+                    msg = conflict_result
                        
                 # Remove a schedule
                 elif isinstance(msg, self.MsgDeleteSchedule):
