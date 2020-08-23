@@ -274,9 +274,6 @@ class Spronkler():
         
             conflict_detected = False
             for schedule in self.schedules:
-                if conflict_detected == True:
-                    break
-                    
                 # check if the run windows overlap.
                 start = datetime.datetime.strptime(schedule["start_time"], self.dateformat)
                 end = datetime.datetime.strptime(schedule["end_time"], self.dateformat)
@@ -318,6 +315,12 @@ class Spronkler():
                             i += 1
                         else:
                             j += 1
+                            
+                        if conflict_detected:
+                            break
+                            
+                    if conflict_detected:
+                        break
                             
             
             # the end, finally
