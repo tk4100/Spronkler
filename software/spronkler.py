@@ -388,7 +388,7 @@ class Spronkler():
             msg = sock.recv_pyobj()
             
             if isinstance(msg, self.MsgNAK):
-                print("Failed to set schedule: '{}'".format(msg.reason))
+                print("Failed to set schedule: {}".format(msg.reason))
             else:
                 print("Added schedule successfully!")
 
@@ -428,6 +428,12 @@ with open("rainbird.json", "r") as fh:
 flerp.scheduleDaemon.addSchedule(schedule)
 flerp.scheduleDaemon.addSchedule(schedule)
 
+with open("rainbird2.json", "r") as fh:
+    schedule = json.load(fh)
+    
+flerp.scheduleDaemon.addSchedule(schedule)
+
+print("Currently active schedles:")
 flerp.scheduleDaemon.listSchedules()
 
 flerp.pinDaemon.shutdown()
