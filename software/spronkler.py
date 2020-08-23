@@ -230,7 +230,7 @@ class Spronkler():
         class MsgDisable():
             pass
 
-        def __init__(self, ctx, pinmap):
+        def __init__(self, ctx):
             # ZMQ setup
             self.threadname = "scheduleDaemon"
             self.zmqctx = ctx
@@ -244,8 +244,6 @@ class Spronkler():
             #start the thread
             self.__daemonThread.start()
 
-            #init
-            self.init(pinmap)
 
         # validates whether or not a new schedule will conflict with *any* schedule currently enabled.
         def __conflictCheck(self, newschedule):
