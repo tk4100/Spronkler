@@ -19,25 +19,19 @@ once, as well as enforcing guard intervals etc.
 
 ## Schedule Daemon
 
-Handles Schduling.  The plan is to have this daemon accept JSON objects that represent a schedule, compare this new
-schedule with all other currently active schedules, reject the new schedule if needed with a helpful message (ie,
-"conflicts with schedule 9, 'Rosemary dripline").  Similar logic is required for activating/deactivating schedules.
+Handles Schduling, with a total time-awareness of 365 days.  The plan is to have this daemon accept JSON objects
+that represent a schedule, compare this new schedule with all other currently active schedules, reject the new
+schedule if needed with a helpful message (ie, "conflicts with schedule 9, 'Rosemary dripline").  Similar logic
+is required for activating/deactivating schedules.
 
-Example schedule object.  It runs from May to the end of September, starting after August 20th at 6am.  The time
-is mostly irrelevant, but this is an easy ISO format.  Looking at the schedule section, channel 1 runs for 5 minutes,
-channel 2 for 4 minutes, and so on.
+Example schedule object.  It runs from May 1st 2020, and repeats every 24 hours until October 1st. Looking at
+the schedule section, channel 1 runs for 5 minutes, channel 2 for 4 minutes, and so on.
 ```json
 {
    "name":"Demo Schedule",
-   "start_time":"2020-08-20T06:00:00",
+   "start_time":"2020-05-01T06:00:00",
+   "end_time:"2020-10-01T20:00:00",
    "interval_minutes":1440,
-   "run_months":[
-      5,
-      6,
-      7,
-      8,
-      9
-   ],
    "schedule":{
       "1":5,
       "2":4,
