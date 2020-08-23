@@ -267,7 +267,7 @@ class Spronkler():
             # generate a list of runtimes for the new schedule
             newruntimes = []
             newruntimes.append((newstart, newstart + datetime.timedelta(minutes=newtotalruntime)))
-            while newruntimes[-1][0] + datetime.timedelta(minutes=newschedule['interval_minutes']) < newstart + datetime.timedelta(days=365):
+            while newruntimes[-1][0] + datetime.timedelta(minutes=newschedule['interval_minutes']) < newstart + datetime.timedelta(days=365) and newruntimes[-1][0] < newend:
                 nextstart = newruntimes[-1][0] + datetime.timedelta(minutes=newschedule['interval_minutes'])
                 nextend = nextstart + datetime.timedelta(minutes=newtotalruntime)
                 newruntimes.append((nextstart, nextend))
@@ -291,7 +291,7 @@ class Spronkler():
                     # generate a list of start and end times for the new schedule
                     runtimes = []
                     runtimes.append((start, start + datetime.timedelta(minutes=totalruntime)))
-                    while runtimes[-1][0] + datetime.timedelta(minutes=schedule['interval_minutes']) < start + datetime.timedelta(days=365):
+                    while runtimes[-1][0] + datetime.timedelta(minutes=schedule['interval_minutes']) < start + datetime.timedelta(days=365) and runtimes[-1][0] < end:
                         nextstart = runtimes[-1][0] + datetime.timedelta(minutes=schedule['interval_minutes'])
                         nextend = nextstart + datetime.timedelta(minutes=totalruntime)
                         runtimes.append((nextstart, nextend))
