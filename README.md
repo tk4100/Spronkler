@@ -30,7 +30,7 @@ the schedule section, channel 1 runs for 5 minutes, channel 2 for 4 minutes, and
 {
    "name":"Demo Schedule",
    "start_time":"2020-05-01T06:00:00",
-   "end_time:"2020-10-01T20:00:00",
+   "end_time":"2020-10-01T20:00:00",
    "interval_minutes":1440,
    "schedule":{
       "1":5,
