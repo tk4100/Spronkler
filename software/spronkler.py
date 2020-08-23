@@ -243,8 +243,9 @@ class Spronkler():
             self.__daemonThread = threading.Thread(name=self.threadname, target=self.__daemonThread)
             self.max_active_channels = 1
 
-            # some tunables
+            # some tunables and holders
             self.dateformat = '%m-%dT%H:%M:%S'
+            self.schedules = []
 
             #start the thread
             self.__daemonThread.start()
