@@ -226,6 +226,10 @@ class Spronkler():
         class MsgAddSchedule():
             def __init__(self, schedule):
                 self.schedule = schedule
+             
+        class MsgDeleteSchedule():
+            def __init__(self, name):
+                self.name = name
 
         class MsgDisable():
             pass
