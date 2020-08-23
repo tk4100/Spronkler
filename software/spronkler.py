@@ -285,7 +285,7 @@ class Spronkler():
                 if (newstart > start and newstart < end) or (newend > start or newend < end):
                     # get the total runtime for this schedule
                     totalruntime = 0
-                    for channel in schedule.keys():
+                    for channel in schedule['schedule'].keys():
                         totalruntime += int(schedule['schedule'][channel])
                         
                     # generate a list of start and end times for the new schedule
