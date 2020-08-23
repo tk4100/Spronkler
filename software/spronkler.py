@@ -232,7 +232,7 @@ class Spronkler():
             def __init__(self, name):
                 self.name = name
 
-        class MsgDisable():
+        class MsgClearSchedules():
             pass
 
         def __init__(self, ctx):
@@ -307,7 +307,7 @@ class Spronkler():
                         
                         # actually check
                         if (j_newstart >= i_start and j_newstart < i_end) or (j_newend > i_start and j_newend <= i_end):
-                            print("({0} >= {2} and {0} < {3}) or ({1} > {2} and {1} <= {3})".format(j_newstart, j_newend, i_start, i_end))
+                            #print("({0} >= {2} and {0} < {3}) or ({1} > {2} and {1} <= {3})".format(j_newstart, j_newend, i_start, i_end))
                             conflict_detected = True
                             conflicting_schedule = schedule
                             
@@ -337,47 +337,52 @@ class Spronkler():
         def __daemonThread(self):
             # zmq connect
             sock = self.zmqctx.socket(zmq.REP)
+            sock.RCVTIMEO = 500
             sock.bind(self.zmq_address)
 
             while True:
-                msg = sock.recv_pyobj()
-                # switch on relevant message types
-                # ping
-                if isinstance(msg, self.MsgPing):
-                    print("scheduleDaemon: Received ping")
-                    msg = self.MsgPong()
+                try:
+                    msg = sock.recv_pyobj()
+                    # switch on relevant message types
+                    # ping
+                    if isinstance(msg, self.MsgPing):
+                        print("scheduleDaemon: Received ping")
+                        msg = self.MsgPong()
 
-                # add a schedule
-                elif isinstance(msg, self.MsgAddSchedule):
-                    conflict_result = self.__conflictCheck(msg.schedule)
-                    if isinstance(conflict_result, self.MsgACK):
-                        self.schedules.append(msg.schedule)
-                    msg = conflict_result
-                       
-                # Remove a schedule
-                elif isinstance(msg, self.MsgDeleteSchedule):
-                    i = 0
-                    found = False
-                    for schedule in self.schedules:
-                        if schedule["name"] == msg.name:
-                            found = True
-                            del(self.schedules[i])
-                            msg = self.MsgACK()
-                        i += 1
-                    if found == False:
-                        msg = self.MsgNAK("No schedule with name '{}' found.".format(msg.name))
-                            
+                    # add a schedule
+                    elif isinstance(msg, self.MsgAddSchedule):
+                        conflict_result = self.__conflictCheck(msg.schedule)
+                        if isinstance(conflict_result, self.MsgACK):
+                            self.schedules.append(msg.schedule)
+                        msg = conflict_result
+                           
+                    # Remove a schedule
+                    elif isinstance(msg, self.MsgDeleteSchedule):
+                        i = 0
+                        found = False
+                        for schedule in self.schedules:
+                            if schedule["name"] == msg.name:
+                                found = True
+                                del(self.schedules[i])
+                                msg = self.MsgACK()
+                            i += 1
+                        if found == False:
+                            msg = self.MsgNAK("No schedule with name '{}' found.".format(msg.name))
+                                
 
-                # list active schedules
-                elif isinstance(msg, self.MsgListSchedules):
-                    msg = self.MsgACK(reason=self.schedules)
+                    # list active schedules
+                    elif isinstance(msg, self.MsgListSchedules):
+                        msg = self.MsgACK(reason=self.schedules)
 
-                # Fallthrough
-                else:
-                    msg = self.MsgNAK("Unknown Message")
+                    # Fallthrough
+                    else:
+                        msg = self.MsgNAK("Unknown Message")
 
-                # reply
-                sock.send_pyobj(msg)
+                    # reply
+                    sock.send_pyobj(msg)
+                except IndexError:
+                    pass
+                    # actually send pin commands
 
         def addSchedule(self, schedule):
             sock = self.zmqctx.socket(zmq.REQ)
@@ -394,6 +399,22 @@ class Spronkler():
                 print("Added schedule successfully!")
 
             sock.close()
+            
+        def deleteSchedule(self, name):
+            sock = self.zmqctx.socket(zmq.REQ)
+            sock.connect(self.zmq_address)
+
+            msg = self.MsgDeleteSchedule(name)
+
+            sock.send_pyobj(msg)
+            msg = sock.recv_pyobj()
+            
+            if isinstance(msg, self.MsgNAK):
+                print("Failed to delete schedule '{}': {}".format(name, msg.reason))
+            else:
+                print("Deleted schedule '{}' successfully!".format(name))
+
+            sock.close()
 
         def listSchedules(self):
             sock = self.zmqctx.socket(zmq.REQ)
@@ -407,8 +428,24 @@ class Spronkler():
             if isinstance(msg, self.MsgNAK):
                 print("Failed to list schedules!: {}".format(msg.reason))
             else:
-                print(json.dumps(msg.reason, sort_keys=True, indent=4, separators=(',', ': ')))
+                return(json.dumps(msg.reason, sort_keys=True, indent=4, separators=(',', ': ')))
 
+            sock.close()
+            
+        def clearSchedules(self):
+            sock = self.zmqctx.socket(zmq.REQ)
+            sock.connect(self.zmq_address)
+
+            msg = self.MsgClearSchedules()
+
+            sock.send_pyobj(msg)
+            msg = sock.recv_pyobj()
+            
+            if isinstance(msg, self.MsgNAK):
+                print("Failed to clear schedules!")
+            else:
+                print("Schedules cleared!")
+                
             sock.close()
 
             
@@ -435,6 +472,6 @@ with open("rainbird2.json", "r") as fh:
 flerp.scheduleDaemon.addSchedule(schedule)
 
 print("Currently active schedules:")
-flerp.scheduleDaemon.listSchedules()
+print(flerp.scheduleDaemon.listSchedules())
 
 flerp.pinDaemon.shutdown()
