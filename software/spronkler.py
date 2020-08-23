@@ -383,6 +383,22 @@ class Spronkler():
 
             sock.close()
 
+        def listSchedules(self):
+            sock = self.zmqctx.socket(zmq.REQ)
+            sock.connect(self.zmq_address)
+
+            msg = self.MsgListSchedules()
+
+            sock.send_pyobj(msg)
+            data = sock.recv_pyobj()
+            
+            if isinstance(msg, self.MsgNAK):
+                print("Failed to list schedules!: {}".format(msg.reason))
+            else:
+                print(json.dumps(data.reason, sort_keys=True, indent=4, separators=(',', ': '))
+
+            sock.close()
+
             
 
 #############
