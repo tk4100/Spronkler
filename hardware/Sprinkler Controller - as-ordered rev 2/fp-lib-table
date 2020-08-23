@@ -1,0 +1,3 @@
+(fp_lib_table
+  (lib (name "Sprinkler Controller Parts")(type KiCad)(uri "${KIPRJMOD}/Sprinkler Controller Parts.pretty")(options "")(descr ""))
+)
