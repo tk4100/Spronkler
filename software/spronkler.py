@@ -15,17 +15,20 @@ class Spronkler():
         # set up ZMQ and start threads
         self.zmqctx = zmq.Context()
         
-        # set up the pin daemon
+        # set up the daemons
         self.pinDaemon = self.PinDaemon(self.zmqctx, pinmap)
+        self.scheduleDaemon = self.ScheduleDaemon(self.zmqctx)
         
 
         # wait for the threads to be ready
         pinDaemonAlive = False
-        while pinDaemonAlive == False:
+        scheduleDaemonAlive = False
+        while pinDaemonAlive == False or scheduleDaemonAlive == False:
             try:
                 pinDaemonAlive = self.pinDaemon.ping()
+                scheduleDaemonAlive = self.scheduleDaemon.ping()
             except zmq.error.Again:
-                print("Pin Daemon not yet alive....")
+                print("Daemons not yet alive....")
                 continue
 
             time.sleep(0.25)
@@ -245,7 +248,7 @@ class Spronkler():
             self.init(pinmap)
 
         # validates whether or not a new schedule will conflict with *any* schedule currently enabled.
-        def conflictCheck(self, newschedule):
+        def __conflictCheck(self, newschedule):
             # unroll the new schedule's start and end times
             newstart = datetime.datetime.strptime(newschedule["start_time"], self.dateformat)
             newend = datetime.datetime.strptime(newschedule["end_time"], self.dateformat)
@@ -331,7 +334,7 @@ class Spronkler():
 
                 # add a schedule
                 if isinstance(msg, self.MsgAddSchedule):
-                    if self.conflictCheck(msg.schedule) == False:
+                    if self.__conflictCheck(msg.schedule) == False:
                         self.schedules.add(msg.schedule)
                         msg = self.MsgACK()
                        
@@ -360,6 +363,19 @@ class Spronkler():
                 # reply
                 sock.send_pyobj(msg)
 
+        def addSchedule(self, schedule):
+            sock = self.zmqctx.socket(zmq.REQ)
+            sock.connect(self.zmq_address)
+
+            msg = self.MsgAddSchedule(schedule)
+
+            sock.send_pyobj(msg)
+            data = sock.recv_pyobj()
+
+            sock.close()
+
+            
+
 #############
 
 pinmap = [ 4, 17, 27, 22, 10, 9, 11, 5, 12, 6, 7, 8 ]
@@ -369,4 +385,11 @@ flerp.pinDaemon.channelSet(2, True)
 flerp.pinDaemon.channelSet(3, True)
 flerp.pinDaemon.channelSet(2, False)
 flerp.pinDaemon.channelSet(3, True)
+
+with open("rainbird.json", "r") as fh:
+    schedule = json.load(fh)
+    
+flerp.scheduleDaemon.addSchedule(schedule)
+flerp.scheduleDaemon.addSchedule(schedule)
+
 flerp.pinDaemon.shutdown()
