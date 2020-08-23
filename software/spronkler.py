@@ -385,9 +385,9 @@ class Spronkler():
             msg = self.MsgAddSchedule(schedule)
 
             sock.send_pyobj(msg)
-            data = sock.recv_pyobj()
+            msg = sock.recv_pyobj()
             
-            if isinstance(data, self.MsgNAK):
+            if isinstance(msg, self.MsgNAK):
                 print("Failed to set schedule: '{}'".format(msg.reason))
             else:
                 print("Added schedule successfully!")
@@ -406,7 +406,7 @@ class Spronkler():
             if isinstance(msg, self.MsgNAK):
                 print("Failed to list schedules!: {}".format(msg.reason))
             else:
-                print(json.dumps(data.reason, sort_keys=True, indent=4, separators=(',', ': ')))
+                print(json.dumps(msg.reason, sort_keys=True, indent=4, separators=(',', ': ')))
 
             sock.close()
 
