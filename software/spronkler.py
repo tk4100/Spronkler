@@ -272,6 +272,10 @@ class Spronkler():
             for channel in newschedule['schedule'].keys():
                 newtotalruntime += int(newschedule['schedule'][channel])
         
+            # if the total runtime is longer than the interval, the schedule will conflict with itself
+            if newtotalruntime >= newschedule['interval_minutes']
+                return self.MsgNAK("New schedule '{}' conflicts with itself! (Runtime is longer than interval)".format(newschedule['name']))
+        
             # generate a list of runtimes for the new schedule
             newruntimes = []
             newruntimes.append((newstart, newstart + datetime.timedelta(minutes=newtotalruntime)))
@@ -400,7 +404,7 @@ class Spronkler():
                     
         def __scheduleRunnerThread(self, schedule):
             for channel in schedule.keys():
-                print("Channel {} running.".foramt(channel))
+                print("Channel {} running.".format(channel))
                 self.pinDaemon.channelSet(int(channel), True)
                 time.sleep(int(schedule[channel]))
                 
@@ -484,7 +488,7 @@ flerp.pinDaemon.channelSet(2, True)
 flerp.pinDaemon.channelSet(3, True)
 flerp.pinDaemon.channelSet(2, False)
 flerp.pinDaemon.channelSet(3, True)
-
+'''
 with open("rainbird.json", "r") as fh:
     schedule = json.load(fh)
     
@@ -492,6 +496,11 @@ flerp.scheduleDaemon.addSchedule(schedule)
 flerp.scheduleDaemon.addSchedule(schedule)
 
 with open("rainbird2.json", "r") as fh:
+    schedule = json.load(fh)
+    
+flerp.scheduleDaemon.addSchedule(schedule)
+'''
+with open("every_goddamn_minute.json", "r") as fh:
     schedule = json.load(fh)
     
 flerp.scheduleDaemon.addSchedule(schedule)
