@@ -69,14 +69,14 @@ class Spronkler():
 
             sock.close()
             return(retcode)
-			
-		def log(self, message):
-			try:
-				with open("{}.log".format(self.threadname), "a") as logh:
-					message = "[{}][{}]: {}\n".format(datetime.datetime.now(), self.threadname, message)
-					logh.write(message)
-			except:
-				print("FAILED TO LOG MESSAGE!  Too bad you won't see this when I'm a daemon :(")
+            
+        def log(self, message):
+            try:
+                with open("logs/{}.log".format(self.threadname), "a") as logh:
+                    message = "[{}]: {}\n".format(datetime.datetime.now(), message)
+                    logh.write(message)
+            except:
+                print("FAILED TO LOG MESSAGE!  Too bad you won't see this when I'm a daemon :(")
 
 
     # Pin Controller Daemon
