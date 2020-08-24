@@ -415,20 +415,26 @@ class Spronkler():
             sock.connect(self.pinDaemonZMQ)
 
             for channel in schedule.keys():
+                channel = int(channel)
+            
                 print("Channel {} running.".format(channel))
                 
                 # Set
                 msg = Spronkler.PinDaemon.MsgSetChan(channel, True)
                 sock.send_pyobj(msg)
                 msg = sock.recv_pyobj()
+                if isinstance(msg, Spronkler.PinDaemon.MsgNAK):
+                    print("Whoopsie!)
                 
                 # Wait
-                time.sleep(int(schedule[channel]))
+                time.sleep(int(schedule[channel]) * 60)
                 
                 # Unset
                 msg = Spronkler.PinDaemon.MsgSetChan(channel, False)
                 sock.send_pyobj(msg)
                 msg = sock.recv_pyobj()
+                if isinstance(msg, Spronkler.PinDaemon.MsgNAK):
+                    print("Whoopsie!)
                 
             sock.close()
         
