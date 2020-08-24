@@ -414,9 +414,8 @@ class Spronkler():
             sock = self.zmqctx.socket(zmq.REQ)
             sock.connect(self.pinDaemonZMQ)
 
-            for channel in schedule.keys():
-                channel = int(channel)
-            
+            for key in schedule.keys():
+                channel = int(key)
                 print("Channel {} running.".format(channel))
                 
                 # Set
@@ -427,7 +426,7 @@ class Spronkler():
                     print("Whoopsie!")
                 
                 # Wait
-                time.sleep(int(schedule[channel]) * 60)
+                time.sleep(int(schedule[key]) * 60)
                 
                 # Unset
                 msg = Spronkler.PinDaemon.MsgSetChan(channel, False)
