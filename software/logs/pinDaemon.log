@@ -1,7 +1,0 @@
-[2020-08-24 19:05:43.300560]: Output enabled, with pinmap '4, 17, 27, 22, 10, 9, 11, 5, 12, 6, 7, 8'
-[2020-08-24 19:05:43.308954]: Received ping
-[2020-08-24 19:05:43.311265]: Pinged succesfully.
-[2020-08-24 19:05:43.571874]: Channel 2 set to True
-[2020-08-24 19:05:43.578212]: Channel set failed: 'Too many channels already active!'
-[2020-08-24 19:05:43.582044]: Channel 2 set to False
-[2020-08-24 19:05:43.587185]: Channel 3 set to True
