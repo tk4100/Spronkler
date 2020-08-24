@@ -20,6 +20,7 @@ class Spronkler():
         self.pinDaemon = self.PinDaemon(self.zmqctx, pinmap)
         self.scheduleDaemon = self.ScheduleDaemon(self.zmqctx)
         
+        self.scheduleDaemon.pinDaemonZMQ = self.pinDaemon.zmq_address
 
         # wait for the threads to be ready
         pinDaemonAlive = False
@@ -163,7 +164,6 @@ class Spronkler():
                         CHANNELS.append(LED(pin))
                         CHANNELS[-1].off()
 
-                    
                     self.log("Output enabled, with pinmap '{}'".format(', '.join( [ str(x) for x in msg.pinmap ] )))
                     msg = self.MsgACK()
                 
@@ -411,10 +411,28 @@ class Spronkler():
                             
                     
         def __scheduleRunnerThread(self, schedule):
+            sock = self.zmqctx.socket(zmq.REQ)
+            sock.connect(self.pinDaemonZMQ)
+
             for channel in schedule.keys():
                 print("Channel {} running.".format(channel))
-                self.pinDaemon.channelSet(int(channel), True)
+                
+                # Set
+                msg = Spronkler().PinDaemon().MsgSetChan(channel, True)
+                sock.send_pyobj(msg)
+                msg = sock.recv_pyobj()
+                
+                # Wait
                 time.sleep(int(schedule[channel]))
+                
+                # Unset
+                msg = Spronkler().PinDaemon().MsgSetChan(channel, False)
+                sock.send_pyobj(msg)
+                msg = sock.recv_pyobj()
+                
+            sock.close()
+        
+            
                 
 
         def __runSchedule(self, schedule):
