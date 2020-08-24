@@ -426,7 +426,7 @@ class Spronkler():
                 time.sleep(int(schedule[channel]))
                 
                 # Unset
-                msg = Spronkler().PinDaemon().MsgSetChan(channel, False)
+                msg = Spronkler.PinDaemon.MsgSetChan(channel, False)
                 sock.send_pyobj(msg)
                 msg = sock.recv_pyobj()
                 
