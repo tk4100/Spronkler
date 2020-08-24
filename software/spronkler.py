@@ -401,7 +401,7 @@ class Spronkler():
                         start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat)
                         end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat)
                         now = datetime.datetime.now()
-                        now.year = 1900
+                        now.replace(year=1900)
                         self.log("Should I start Schedule '{}'?  It starts at {} and ends at {}.  Currently, it's {}.".format(self.schedules[i]['name'], start_time, end_time, now))
                         if start_time >= now and end_time < now and self.schedule[i]['running'] == False:
                             self.__runSchedule(schedule['schedule'])
