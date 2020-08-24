@@ -56,6 +56,8 @@ A board powered by 24VAC which provides +5V on a standard Raspberry Pi header, a
 opto-isolators.  ATM the power supply is linear, which doesn't work in practice, as it rapidly overheats from dropping
 something like 29V.  The next rev will have a switching reg.
 
+Pi Zero = ~125mA.  29 * 0.125 = ***3.625W**
+
 ## PSU
 An LM317T and some caps.
 
