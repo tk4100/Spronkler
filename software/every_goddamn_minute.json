@@ -1,6 +1,6 @@
 {
    "name":"Every Goddamn Minute",
-   "start_time":"01-01T00:00:01",
+   "start_time":"01-01T00:00:00",
    "end_time":"12-31T23:59:59",
    "interval_minutes":45,
    "enabled":"true",
