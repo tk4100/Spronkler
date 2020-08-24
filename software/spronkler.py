@@ -398,7 +398,7 @@ class Spronkler():
                     # to a thread which will execute it 
                     i = 0
                     while i < len(self.schedules):
-                        self.log("Should I start Schedule {}?".format(schedules[i]['name']))
+                        self.log("Should I start Schedule {}?".format(self.schedules[i]['name']))
                         start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat)
                         end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat)
                         if start_time >= datetime.datetime.now() and end_time < datetime.datetime.now() and self.schedule[i]['running'] == False:
