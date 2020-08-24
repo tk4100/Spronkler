@@ -409,7 +409,6 @@ class Spronkler():
                             self.__runSchedule(schedules['schedule'])
                             self.schedules[i]['running'] = True
                             
-                        break
                     
         def __scheduleRunnerThread(self, schedule):
             for channel in schedule.keys():
