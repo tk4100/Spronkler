@@ -60,7 +60,7 @@ something like 29V.  The next rev will have a switching reg.
 An LM317T and some caps.
 
 ***Note:*** There might be a noise problem here too.  I'm assuming the issue with Pi restarts is heat in the LM317, but
-we might need some better noise suppression too.  Don't forget to check before spinning a new board.
+we might need some better noise suppression.  Don't forget to check before spinning a new board.
 
 # I/O
 An opto-isolated SSR across common and each sprinkler channel.  Only a TVS diode is protecting the AC side of these, which
