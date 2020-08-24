@@ -353,6 +353,7 @@ class Spronkler():
                     elif isinstance(msg, self.MsgAddSchedule):
                         conflict_result = self.__conflictCheck(msg.schedule)
                         if isinstance(conflict_result, self.MsgACK):
+                            msg.schedule['running'] = False
                             self.schedules.append(msg.schedule)
                         msg = conflict_result
                            
@@ -381,8 +382,24 @@ class Spronkler():
                     # reply
                     sock.send_pyobj(msg)
                 except zmq.error.Again:
-                    print("Timeout")
-                    # actually send pin commands
+                    # iterate through live schedules, and if there is one due for triggering, pass its channel/time list
+                    # to a thread which will execute it 
+                    i = 0
+                    while i < len(self.schedules):
+                        if self.schedules[i]['start_time'] >= datetime.datetime.now() and self.schedules[i]['end_time'] < datetime.datetime.now() and self.schedule[i]['running'] == False:
+                            self.__runSchedule(schedule['schedule'])
+                            self.schedules[i]['running'] = True
+                    
+        def __scheduleRunnerThread(self, schedule):
+            for channel in schedule.keys():
+                print("Channel {} running.".foramt(channel))
+                self.pinDaemon.channelSet(int(channel), True)
+                time.sleep(int(schedule[channel]))
+                
+
+        def __runSchedule(self, schedule):
+            runthread = threading.Thread(name="scheduleRunner", target=self.__scheduleRunnerThread)
+            runthread.start()
 
         def addSchedule(self, schedule):
             sock = self.zmqctx.socket(zmq.REQ)
