@@ -406,7 +406,7 @@ class Spronkler():
                         #self.log("Should I start Schedule '{}'?  It starts at {} and ends at {}.  Currently, it's {}.".format(self.schedules[i]['name'], start_time, end_time, now))
                         #self.log("Start > Now: {}, End < Now: {}, Already Running: {}".format(start_time >= now, end_time < now, self.schedules[i]['running'] == False))
                         if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
-                            self.__runSchedule(schedules['schedule'])
+                            self.__runSchedule(self.schedules['schedule'])
                             self.schedules[i]['running'] = True
                             
                     
