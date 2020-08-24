@@ -491,4 +491,4 @@ flerp.scheduleDaemon.addSchedule(schedule)
 print("Currently active schedules:")
 print(flerp.scheduleDaemon.listSchedules())
 
-flerp.pinDaemon.shutdown()
+#flerp.pinDaemon.shutdown()
