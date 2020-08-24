@@ -419,7 +419,7 @@ class Spronkler():
                 
 
         def __runSchedule(self, schedule):
-            runthread = threading.Thread(name="scheduleRunner", target=self.__scheduleRunnerThread)
+            runthread = threading.Thread(name="scheduleRunner", target=self.__scheduleRunnerThread, args=(schedule,))
             runthread.start()
 
         def addSchedule(self, schedule):
