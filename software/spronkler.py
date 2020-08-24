@@ -398,7 +398,10 @@ class Spronkler():
                     # to a thread which will execute it 
                     i = 0
                     while i < len(self.schedules):
-                        if datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat) >= datetime.datetime.now() and datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat) < datetime.datetime.now() and self.schedule[i]['running'] == False:
+                        self.log("Should I start Schedule {}?".format(schedules[i]['name']))
+                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat)
+                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat)
+                        if start_time >= datetime.datetime.now() and end_time < datetime.datetime.now() and self.schedule[i]['running'] == False:
                             self.__runSchedule(schedule['schedule'])
                             self.schedules[i]['running'] = True
                     
@@ -484,11 +487,12 @@ class Spronkler():
 pinmap = [ 4, 17, 27, 22, 10, 9, 11, 5, 12, 6, 7, 8 ]
 
 flerp = Spronkler(pinmap)
+'''
 flerp.pinDaemon.channelSet(2, True)
 flerp.pinDaemon.channelSet(3, True)
 flerp.pinDaemon.channelSet(2, False)
 flerp.pinDaemon.channelSet(3, True)
-'''
+
 with open("rainbird.json", "r") as fh:
     schedule = json.load(fh)
     
