@@ -61,14 +61,22 @@ class Spronkler():
             msg = sock.recv_pyobj()
 
             if type(msg) == type(self.MsgPong()):
-                print("Pinged thread {} succesfully.".format(self.threadname))
+                self.log("Pinged succesfully.")
                 retcode = True
             else:
-                print("Non-ACK response received: {}.".format(type(msg)))
+                self.log("Non-ACK response received: {}.".format(type(msg)))
                 retcode = False
 
             sock.close()
             return(retcode)
+			
+		def log(self, message):
+			try:
+				with open("{}.log".format(self.threadname), "a") as logh:
+					message = "[{}][{}]: {}\n".format(datetime.datetime.now(), self.threadname, message)
+					logh.write(message)
+			except:
+				print("FAILED TO LOG MESSAGE!  Too bad you won't see this when I'm a daemon :(")
 
 
     # Pin Controller Daemon
@@ -116,7 +124,7 @@ class Spronkler():
                 # switch on relevant message types
                 # ping
                 if isinstance(msg, self.MsgPing):
-                    print("pinDaemon: Received ping")
+                    self.log("Received ping")
                     msg = self.MsgPong()
 
                 # set channel
@@ -129,14 +137,14 @@ class Spronkler():
                     try:
                         if msg.state == True and on_count < self.max_active_channels:
                             CHANNELS[msg.channel].on()
-                            print("pinDaemon: Channel {} set to {}".format(msg.channel, msg.state))
+                            self.log("Channel {} set to {}".format(msg.channel, msg.state))
                             on_count += 1
                             msg = self.MsgACK()
                         elif msg.state == True and on_count >= self.max_active_channels:
                             msg = self.MsgNAK("Too many channels already active!")
                         elif msg.state == False:
                             CHANNELS[msg.channel].off()
-                            print("pinDaemon: Channel {} set to {}".format(msg.channel, msg.state))
+                            self.log("Channel {} set to {}".format(msg.channel, msg.state))
                             on_count -= 1
                             msg = self.MsgACK()
                     except Exception as e:
@@ -156,7 +164,7 @@ class Spronkler():
                         CHANNELS[-1].off()
 
                     
-                    print("Output enabled, with pinmap '{}'".format(', '.join( [ str(x) for x in msg.pinmap ] )))
+                    self.log("Output enabled, with pinmap '{}'".format(', '.join( [ str(x) for x in msg.pinmap ] )))
                     msg = self.MsgACK()
                 
                 # disable all outputs
@@ -169,7 +177,7 @@ class Spronkler():
                     while len(CHANNELS) > 0:
                         del(CHANNELS[-1])
                     
-                    print("All outputs set low and disabled!")
+                    self.log("All outputs set low and disabled!")
                     msg = self.MsgACK()
 
                 # Fallthrough
@@ -213,7 +221,7 @@ class Spronkler():
             msg = sock.recv_pyobj()
 
             if isinstance(msg, self.MsgNAK):
-                print("Channel set failed: '{}'".format(msg.reason))
+                self.log("Channel set failed: '{}'".format(msg.reason))
 
             sock.close()
         
@@ -307,7 +315,7 @@ class Spronkler():
                         
                         # actually check
                         if (j_newstart >= i_start and j_newstart < i_end) or (j_newend > i_start and j_newend <= i_end):
-                            #print("({0} >= {2} and {0} < {3}) or ({1} > {2} and {1} <= {3})".format(j_newstart, j_newend, i_start, i_end))
+                            #self.log("({0} >= {2} and {0} < {3}) or ({1} > {2} and {1} <= {3})".format(j_newstart, j_newend, i_start, i_end))
                             conflict_detected = True
                             conflicting_schedule = schedule
                             
@@ -346,7 +354,7 @@ class Spronkler():
                     # switch on relevant message types
                     # ping
                     if isinstance(msg, self.MsgPing):
-                        print("scheduleDaemon: Received ping")
+                        self.log("Received ping")
                         msg = self.MsgPong()
 
                     # add a schedule
@@ -411,9 +419,9 @@ class Spronkler():
             msg = sock.recv_pyobj()
             
             if isinstance(msg, self.MsgNAK):
-                print("Failed to set schedule: {}".format(msg.reason))
+                self.log("Failed to set schedule: {}".format(msg.reason))
             else:
-                print("Added schedule successfully!")
+                self.log("Added schedule successfully!")
 
             sock.close()
             
@@ -427,9 +435,9 @@ class Spronkler():
             msg = sock.recv_pyobj()
             
             if isinstance(msg, self.MsgNAK):
-                print("Failed to delete schedule '{}': {}".format(name, msg.reason))
+                self.log("Failed to delete schedule '{}': {}".format(name, msg.reason))
             else:
-                print("Deleted schedule '{}' successfully!".format(name))
+                self.log("Deleted schedule '{}' successfully!".format(name))
 
             sock.close()
 
@@ -443,7 +451,7 @@ class Spronkler():
             msg = sock.recv_pyobj()
             
             if isinstance(msg, self.MsgNAK):
-                print("Failed to list schedules!: {}".format(msg.reason))
+                self.log("Failed to list schedules!: {}".format(msg.reason))
             else:
                 return(json.dumps(msg.reason, sort_keys=True, indent=4, separators=(',', ': ')))
 
@@ -459,9 +467,9 @@ class Spronkler():
             msg = sock.recv_pyobj()
             
             if isinstance(msg, self.MsgNAK):
-                print("Failed to clear schedules!")
+                self.log("Failed to clear schedules!")
             else:
-                print("Schedules cleared!")
+                self.log("Schedules cleared!")
                 
             sock.close()
 
