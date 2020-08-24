@@ -404,7 +404,7 @@ class Spronkler():
                         #self.log("{} -> {}".format(now_raw.isoformat(), "{}-".format(now_raw.year) + self.dateformat + ".%f"))
                         now = datetime.datetime.strptime(now_raw.isoformat(), "{}-".format(now_raw.year) + self.dateformat + ".%f")
                         #self.log("Should I start Schedule '{}'?  It starts at {} and ends at {}.  Currently, it's {}.".format(self.schedules[i]['name'], start_time, end_time, now))
-                        #self.log(start_time >= now, end_time < now, self.schedules[i]['running'] == False)
+                        self.log(start_time >= now, end_time < now, self.schedules[i]['running'] == False)
                         if start_time >= now and end_time < now and self.schedules[i]['running'] == False:
                             self.__runSchedule(schedule['schedule'])
                             self.schedules[i]['running'] = True
