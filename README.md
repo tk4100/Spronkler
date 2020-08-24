@@ -58,11 +58,15 @@ something like 29V.  The next rev will have a switching reg.
 
 Pi Zero = ~125mA.  29 * 0.125 = **3.625W**
 
+3.625W == Wayyy too much to dissipate in this package.  Anything over about 500mW requires a heatsink, and we don't want that.
+
 ## PSU
 An LM317T and some caps.
 
 ***Note:*** There might be a noise problem here too.  I'm assuming the issue with Pi restarts is heat in the LM317, but
-we might need some better noise suppression.  Don't forget to check before spinning a new board.  The [LMZ14201HTZ](https://www.digikey.com/product-detail/en/texas-instruments/LMZ14201HTZ-NOPB/LMZ14201HTZ-NOPBCT-ND/2533811) is
+we might need some better noise suppression.  Don't forget to check before spinning a new board.
+
+The [LMZ14201HTZ](https://www.digikey.com/product-detail/en/texas-instruments/LMZ14201HTZ-NOPB/LMZ14201HTZ-NOPBCT-ND/2533811) is
 pricey, but appeals to my laziness.
 
 # I/O
