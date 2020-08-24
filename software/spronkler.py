@@ -273,7 +273,7 @@ class Spronkler():
                 newtotalruntime += int(newschedule['schedule'][channel])
         
             # if the total runtime is longer than the interval, the schedule will conflict with itself
-            if newtotalruntime >= newschedule['interval_minutes']
+            if newtotalruntime >= newschedule['interval_minutes']:
                 return self.MsgNAK("New schedule '{}' conflicts with itself! (Runtime is longer than interval)".format(newschedule['name']))
         
             # generate a list of runtimes for the new schedule
