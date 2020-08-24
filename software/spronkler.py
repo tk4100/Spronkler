@@ -424,7 +424,7 @@ class Spronkler():
                 sock.send_pyobj(msg)
                 msg = sock.recv_pyobj()
                 if isinstance(msg, Spronkler.PinDaemon.MsgNAK):
-                    print("Whoopsie!)
+                    print("Whoopsie!")
                 
                 # Wait
                 time.sleep(int(schedule[channel]) * 60)
@@ -434,7 +434,7 @@ class Spronkler():
                 sock.send_pyobj(msg)
                 msg = sock.recv_pyobj()
                 if isinstance(msg, Spronkler.PinDaemon.MsgNAK):
-                    print("Whoopsie!)
+                    print("Whoopsie!")
                 
             sock.close()
         
