@@ -418,7 +418,7 @@ class Spronkler():
                 print("Channel {} running.".format(channel))
                 
                 # Set
-                msg = Spronkler().PinDaemon().MsgSetChan(channel, True)
+                msg = Spronkler.PinDaemon.MsgSetChan(channel, True)
                 sock.send_pyobj(msg)
                 msg = sock.recv_pyobj()
                 
