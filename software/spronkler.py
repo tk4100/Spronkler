@@ -148,8 +148,7 @@ class Spronkler():
                             self.log("Channel {} set to {}".format(msg.channel, msg.state))
                             on_count -= 1
                             msg = self.MsgACK()
-                    #except Exception as e:
-                    except ValueError as e:
+                    except Exception as e:
                         msg = self.MsgNAK("Exception occurred! {}".format(str(e)))
 
                 # emable/set pinmap
