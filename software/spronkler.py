@@ -416,7 +416,8 @@ class Spronkler():
             sock.connect(self.pinDaemonZMQ)
 
             for key in schedule.keys():
-                channel = int(key)
+                # channel names are 1-indexed strings, channels are 0-indexed ints
+                channel = int(key) - 1
                 print("Channel {} running.".format(channel))
                 
                 # Set
@@ -438,9 +439,6 @@ class Spronkler():
                 
             sock.close()
         
-            
-                
-
         def __runSchedule(self, schedule):
             runthread = threading.Thread(name="scheduleRunner", target=self.__scheduleRunnerThread, args=(schedule,))
             runthread.start()
