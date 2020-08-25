@@ -407,6 +407,9 @@ class Spronkler():
                     # THIS NEEDS RETOOLING:  The start and end times used are the time of year start and ends, we need to deal with the dailies
                     # here.  Probably project start times forward into the future and trigger once on the appropriate one?
                     
+                    # Orrr, maybe just blindly pass all conflict-checked schedules into a runner thread, which has to sort out start times
+                    # etc. for itself.  Thread reaping becomes an issue at that point, we don't want ghostly schedules running.
+                    
                     ######## !!!!!!!!!!!!! ###########
                     
                     i = 0
