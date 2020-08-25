@@ -405,6 +405,10 @@ class Spronkler():
                             self.__runSchedule(self.schedules[i])
                             self.schedules[i]['running'] = True
                             
+                        # schedules get one chance to fire during their window.  Once the end of the window has come, reset the schedule's "running" status
+                        if start_time < now and start_time + datetime.timedelta(minutes=self.schedules[i]['interval_minutes']) < now:
+                            self.schedules[i]['running'] = False
+                            
                     
         def __scheduleRunnerThread(self, schedule):
             self.log("Runner thread '{}' spawned.".format(schedule['name']))
@@ -434,7 +438,7 @@ class Spronkler():
                     print("Whoopsie: {}".format(msg.reason))
             
             sock.close()
-            self.log("Runner thread  '{}' finished, dying normally.".format(schedule['name']))
+            self.log("Runner thread '{}' finished, dying normally.".format(schedule['name']))
         
         def __runSchedule(self, schedule):
             runthread = threading.Thread(name="scheduleRunner", target=self.__scheduleRunnerThread, args=(schedule,))
