@@ -361,7 +361,9 @@ class Spronkler():
                     elif isinstance(msg, self.MsgAddSchedule):
                         conflict_result = self.__conflictCheck(msg.schedule)
                         if isinstance(conflict_result, self.MsgACK):
+                            # add in internal tracking entries
                             msg.schedule['running'] = False
+                            msg.schedule['lastrun'] = 0
                             self.schedules.append(msg.schedule)
                         msg = conflict_result
                            
@@ -404,9 +406,10 @@ class Spronkler():
                         if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
                             self.__runSchedule(self.schedules[i])
                             self.schedules[i]['running'] = True
+                            self.schedules[i]['lastrun'] = time.time()
                             
                         # schedules get one chance to fire during their window.  Once the end of the window has come, reset the schedule's "running" status
-                        if start_time < now and start_time + datetime.timedelta(minutes=self.schedules[i]['interval_minutes']) < now:
+                        if time.time() - self.schedules[i]['lastrun'] > self.schedules[i]['interval_minutes'] * 60:
                             self.schedules[i]['running'] = False
                             
                     
