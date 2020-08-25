@@ -407,7 +407,7 @@ class Spronkler():
                             
                     
         def __scheduleRunnerThread(self, schedule):
-            self.log("Runner thread spawned for schedule '{}'".format(schedule['name']))
+            self.log("Runner thread '{}' spawned.".format(schedule['name']))
         
             sock = self.zmqctx.socket(zmq.REQ)
             sock.connect(self.pinDaemonZMQ)
@@ -434,7 +434,7 @@ class Spronkler():
                     print("Whoopsie: {}".format(msg.reason))
             
             sock.close()
-            self.log("Runner thread for schedule '{}' finished, dying normally.".format(schedule['name']))
+            self.log("Runner thread  '{}' finished, dying normally.".format(schedule['name']))
         
         def __runSchedule(self, schedule):
             runthread = threading.Thread(name="scheduleRunner", target=self.__scheduleRunnerThread, args=(schedule,))
