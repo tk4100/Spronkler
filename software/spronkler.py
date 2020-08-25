@@ -138,14 +138,14 @@ class Spronkler():
                     try:
                         if msg.state == True and on_count < self.max_active_channels:
                             CHANNELS[msg.channel].on()
-                            self.log("Channel {} set to {}".format(msg.channel, msg.state))
+                            self.log("Channel {} ON.".format(msg.channel))
                             on_count += 1
                             msg = self.MsgACK()
                         elif msg.state == True and on_count >= self.max_active_channels:
                             msg = self.MsgNAK("Too many channels already active!")
                         elif msg.state == False:
                             CHANNELS[msg.channel].off()
-                            self.log("Channel {} set to {}".format(msg.channel, msg.state))
+                            self.log("Channel {} OFF.".format(msg.channel))
                             on_count -= 1
                             msg = self.MsgACK()
                     except Exception as e:
@@ -335,16 +335,12 @@ class Spronkler():
                     if conflict_detected:
                         break
                             
-            
             # the end, finally
             if conflict_detected:
                 return self.MsgNAK("New schedule '{}' conflicts with existing schedule '{}'!".format(newschedule['name'], conflicting_schedule['name']))
             else:
                 return self.MsgACK()
                         
-                    
-                 
-
         # Daemon thread
         def __daemonThread(self):
             # zmq connect
@@ -406,18 +402,19 @@ class Spronkler():
                         #self.log("Should I start Schedule '{}'?  It starts at {} and ends at {}.  Currently, it's {}.".format(self.schedules[i]['name'], start_time, end_time, now))
                         #self.log("Start > Now: {}, End < Now: {}, Already Running: {}".format(start_time >= now, end_time < now, self.schedules[i]['running'] == False))
                         if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
-                            self.__runSchedule(self.schedules[i]['schedule'])
+                            self.__runSchedule(self.schedules[i])
                             self.schedules[i]['running'] = True
                             
                     
         def __scheduleRunnerThread(self, schedule):
+            self.log("Runner thread spawned for schedule '{}'".format(schedule['name']))
+        
             sock = self.zmqctx.socket(zmq.REQ)
             sock.connect(self.pinDaemonZMQ)
 
-            for key in schedule.keys():
+            for key in schedule['schedule'].keys():
                 # channel names are 1-indexed strings, channels are 0-indexed ints
                 channel = int(key) - 1
-                print("Channel {} running.".format(channel))
                 
                 # Set
                 msg = Spronkler.PinDaemon.MsgSetChan(channel, True)
@@ -427,7 +424,7 @@ class Spronkler():
                     print("Whoopsie: {}".format(msg.reason))
                 
                 # Wait
-                time.sleep(int(schedule[key]) * 1)
+                time.sleep(int(schedule['schedule'][key]) * 1)
                 
                 # Unset
                 msg = Spronkler.PinDaemon.MsgSetChan(channel, False)
@@ -435,8 +432,9 @@ class Spronkler():
                 msg = sock.recv_pyobj()
                 if isinstance(msg, Spronkler.PinDaemon.MsgNAK):
                     print("Whoopsie: {}".format(msg.reason))
-                
+            
             sock.close()
+            self.log("Runner thread for schedule '{}' finished, dying normally.".format(schedule['name']))
         
         def __runSchedule(self, schedule):
             runthread = threading.Thread(name="scheduleRunner", target=self.__scheduleRunnerThread, args=(schedule,))
