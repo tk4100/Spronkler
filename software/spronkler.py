@@ -401,15 +401,22 @@ class Spronkler():
                 except zmq.error.Again:
                     # iterate through live schedules, and if there is one due for triggering, pass its channel/time list
                     # to a thread which will execute it 
+                    
+                    ######## !!!!!!!!!!!!! ###########
+                    
+                    # THIS NEEDS RETOOLING:  The start and end times used are the time of year start and ends, we need to deal with the daylies
+                    # here.  Probably project start times forward into the future and trigger once on the appropriate one?
+                    
+                    ######## !!!!!!!!!!!!! ###########
+                    
                     i = 0
                     while i < len(self.schedules):
                         start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat)
                         end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat)
+                        
                         now_raw = datetime.datetime.now()
-                        #self.log("{} -> {}".format(now_raw.isoformat(), "{}-".format(now_raw.year) + self.dateformat + ".%f"))
                         now = datetime.datetime.strptime(now_raw.isoformat(timespec='seconds'), "{}-".format(now_raw.year) + self.dateformat)
-                        #self.log("Should I start Schedule '{}'?  It starts at {} and ends at {}.  Currently, it's {}.".format(self.schedules[i]['name'], start_time, end_time, now))
-                        #self.log("Start > Now: {}, End < Now: {}, Already Running: {}".format(start_time >= now, end_time < now, self.schedules[i]['running'] == False))
+                        
                         if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
                             self.__runSchedule(self.schedules[i])
                             self.schedules[i]['running'] = True
