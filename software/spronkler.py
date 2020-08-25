@@ -428,7 +428,7 @@ class Spronkler():
                     print("Whoopsie: {}".format(msg.reason))
                 
                 # Wait
-                time.sleep(int(schedule['schedule'][key]) * 1)
+                time.sleep(int(schedule['schedule'][key]) * 60)
                 
                 # Unset
                 msg = Spronkler.PinDaemon.MsgSetChan(channel, False)
