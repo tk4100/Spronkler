@@ -134,6 +134,11 @@ class Spronkler():
                     if controller_state != "ENABLED":
                         msg = self.MsgNAK("Controller not enabled.")
 
+                    # convert any string channels to ints, warning as we do so.
+                    if type(msg.channel) == type("this is a string"):
+                        self.log("Received a string channel number, converting to int and subtracting one.  Fix your code!")
+                        msg.channel = int(msg.channel) - 1
+
                     # set a channel
                     try:
                         if msg.state == True and on_count < self.max_active_channels:
@@ -148,6 +153,8 @@ class Spronkler():
                             self.log("Channel {} OFF.".format(msg.channel))
                             on_count -= 1
                             msg = self.MsgACK()
+                    except IndexError:
+                        msg = self.MsgNAK("Channel {} does not exist!".format(msg.channel))
                     except Exception as e:
                         msg = self.MsgNAK("Exception occurred! {}".format(str(e)))
 
