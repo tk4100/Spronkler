@@ -1,6 +1,6 @@
 {
    "name":"A few minutes at the end of each hour",
-   "start_time":"01-01T00:50:00",
+   "start_time":"01-01T00:57:00",
    "end_time":"12-31T23:59:59",
    "interval_minutes":60,
    "enabled":"true",
