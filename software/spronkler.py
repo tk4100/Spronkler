@@ -271,6 +271,7 @@ class Spronkler():
             # unroll the new schedule's start and end times
             newstart = datetime.datetime.strptime(newschedule["start_time"], self.dateformat)
             newend = datetime.datetime.strptime(newschedule["end_time"], self.dateformat)
+            print(newstart)
             if newend < newstart:
                 newend = newend + datetime.timedelta(days=365)
         
@@ -372,7 +373,7 @@ class Spronkler():
                             msg.schedule['running'] = False
                             msg.schedule['nextrun'] = datetime.datetime.timestamp(datetime.datetime.strptime(msg.schedule['start_time'], self.dateformat).replace(year=datetime.datetime.now().year))
                             
-                            #advance next run to the frist time this schedule runs *after* now
+                            #advance next run to the first time this schedule runs *after* now
                             while msg.schedule['nextrun'] < time.time():
                                 msg.schedule['nextrun'] += msg.schedule['interval_minutes'] * 60
                             
