@@ -373,9 +373,13 @@ class Spronkler():
                             msg.schedule['running'] = False
                             msg.schedule['nextrun'] = datetime.datetime.timestamp(datetime.datetime.strptime(msg.schedule['start_time'], self.dateformat).replace(year=datetime.datetime.now().year))
                             
+                            self.log(msg.schedule['nextrun'])
+                            
                             #advance next run to the first time this schedule runs *after* now
                             while msg.schedule['nextrun'] < time.time():
                                 msg.schedule['nextrun'] += msg.schedule['interval_minutes'] * 60
+                            
+                            self.log(msg.schedule['nextrun'])
                             
                             self.schedules.append(msg.schedule)
                         msg = conflict_result
@@ -477,7 +481,6 @@ class Spronkler():
             if isinstance(msg, self.MsgNAK):
                 self.log("Failed to set schedule: {}".format(msg.reason))
             else:
-                self.log(self.schedules[-1]['nextrun'])
                 self.log("Added schedule '{}' successfully!  Next run at {}.".format(self.schedules[-1]['name'], datetime.datetime.fromtimestamp(self.schedules[-1]['nextrun'])))
 
             sock.close()
