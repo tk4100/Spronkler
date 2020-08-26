@@ -410,11 +410,14 @@ class Spronkler():
                         now_raw = datetime.datetime.now()
                         now = datetime.datetime.strptime(now_raw.isoformat(timespec='seconds'), "{}-".format(now_raw.year) + self.dateformat)
                         
-                        # We're relying on the fact that there aren't too many requests to ensure we catch the schedule near to it's start time
+                        # first make sure we're in the window
                         if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
-                            self.__runSchedule(self.schedules[i])
-                            self.schedules[i]['running'] = True
-                            self.schedules[i]['lastrun'] = time.time()
+                        
+                            # then make sure we're close the the start hour/minute
+                            if now.hour == start_time.hour and abs(now.minutes - start_time.minutes) < 5:
+                                self.__runSchedule(self.schedules[i])
+                                self.schedules[i]['running'] = True
+                                self.schedules[i]['lastrun'] = time.time()
                             
                         # schedules get one chance to fire during their window.  Once the end of the window has come, reset the schedule's "running" status
                         if time.time() - self.schedules[i]['lastrun'] > self.schedules[i]['interval_minutes'] * 60:
