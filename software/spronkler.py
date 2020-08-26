@@ -414,8 +414,7 @@ class Spronkler():
                         start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat)
                         end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat)
                         
-                        now_raw = datetime.datetime.now(tz=self.tz)
-                        now = datetime.datetime.strptime(now_raw.isoformat(timespec='seconds'), "{}-".format(now_raw.year) + self.dateformat)
+                        now = datetime.datetime.now(tz=self.tz).replace(year=1900)
                         
                         # first make sure we're in the window
                         if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
