@@ -77,8 +77,8 @@ class Spronkler():
                 with open("logs/{}.log".format(self.threadname), "a") as logh:
                     message = "[{}]: {}\n".format(datetime.datetime.now(tz=self.tz), message)
                     logh.write(message)
-            except:
-                print("FAILED TO LOG MESSAGE!  Too bad you won't see this when I'm a daemon :(")
+            except Exception as e:
+                print("FAILED TO LOG MESSAGE!  Too bad you won't see this when I'm a daemon :(  ({})".format(str(e)))
 
 
     # Pin Controller Daemon
