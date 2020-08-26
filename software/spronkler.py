@@ -370,11 +370,12 @@ class Spronkler():
                         if isinstance(conflict_result, self.MsgACK):
                             # add in internal tracking entries
                             msg.schedule['running'] = False
-                            msg.schedule['nextrun'] = 0
+                            msg.schedule['nextrun'] = datetime.datetime.timestamp(datetime.datetime.now()- datetime.timedelta(days=365))
                             
                             #advance next run to the frist time this schedule runs *after* now
                             while msg.schedule['nextrun'] < time.time():
-                                msg.schedule['nextrun'] += int(msg.schedule['interval_minutes']) * 60
+                                print(msg.schedule['nextrun'])
+                                msg.schedule['nextrun'] += (msg.schedule['interval_minutes'] * 60)
                             
                             self.schedules.append(msg.schedule)
                         msg = conflict_result
