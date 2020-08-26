@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import time
 import datetime
-import pytz
 import json
 import threading
 import zmq
@@ -75,7 +74,7 @@ class Spronkler():
         def log(self, message):
             try:
                 with open("logs/{}.log".format(self.threadname), "a") as logh:
-                    message = "[{}]: {}\n".format(datetime.datetime.now(tz=self.tz), message)
+                    message = "[{}]: {}\n".format(datetime.datetime.now(), message)
                     logh.write(message)
             except Exception as e:
                 print("FAILED TO LOG MESSAGE!  Too bad you won't see this when I'm a daemon :(  ({})".format(str(e)))
@@ -103,7 +102,6 @@ class Spronkler():
             self.zmq_address = "inproc://pinDaemon"
             self.__daemonThread = threading.Thread(name=self.threadname, target=self.__daemonThread)
             self.max_active_channels = 1
-            self.tz = pytz.timezone("America/Los_Angeles")
 
             #start the thread
             self.__daemonThread.start()
@@ -263,7 +261,6 @@ class Spronkler():
             # some tunables and holders
             self.dateformat = '%m-%dT%H:%M:%S'
             self.schedules = []
-            self.tz = pytz.timezone("America/Los_Angeles")
 
             #start the thread
             self.__daemonThread.start()
@@ -413,10 +410,10 @@ class Spronkler():
                     
                     i = 0
                     while i < len(self.schedules):
-                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat).replace(tzinfo=self.tz)
-                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat).replace(tzinfo=self.tz)
+                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat)
+                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat)
                         
-                        now = datetime.datetime.now(tz=self.tz).replace(year=1900)
+                        now = datetime.datetime.now().replace(year=1900)
                         
                         # first make sure we're in the window
                         if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
