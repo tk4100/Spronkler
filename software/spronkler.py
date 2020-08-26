@@ -103,6 +103,7 @@ class Spronkler():
             self.zmq_address = "inproc://pinDaemon"
             self.__daemonThread = threading.Thread(name=self.threadname, target=self.__daemonThread)
             self.max_active_channels = 1
+            self.tz = pytz.timezone("America/Los_Angeles")
 
             #start the thread
             self.__daemonThread.start()
