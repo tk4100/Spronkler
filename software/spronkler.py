@@ -412,13 +412,13 @@ class Spronkler():
                     
                     i = 0
                     while i < len(self.schedules):
-                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat)
-                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat)
+                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat).replace(tzinfo=self.tz)
+                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat).replace(tzinfo=self.tz)
                         
                         now = datetime.datetime.now(tz=self.tz).replace(year=1900)
                         
                         # first make sure we're in the window
-                        if start_time.astimezone(self.tz) <= now and end_time.astimezone(self.tz) > now and self.schedules[i]['running'] == False:
+                        if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
                         
                             # if we're past the nextstart time, fire off the thread and update lastrun and nextrun
                             if time.time() > self.schedules[i]['nextrun']:
