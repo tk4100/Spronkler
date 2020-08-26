@@ -411,8 +411,8 @@ class Spronkler():
                     
                     i = 0
                     while i < len(self.schedules):
-                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat)
-                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat)
+                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat).astimezone(self.tz)
+                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat).astimezone(self.tz)
                         
                         now = datetime.datetime.now(tz=self.tz).replace(year=1900)
                         
