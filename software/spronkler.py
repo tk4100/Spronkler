@@ -326,7 +326,7 @@ class Spronkler():
                         
                         # actually check
                         if (j_newstart >= i_start and j_newstart < i_end) or (j_newend > i_start and j_newend <= i_end):
-                            #self.log("({0} >= {2} and {0} < {3}) or ({1} > {2} and {1} <= {3})".format(j_newstart, j_newend, i_start, i_end))
+                            self.log("({0} >= {2} and {0} < {3}) or ({1} > {2} and {1} <= {3})".format(j_newstart, j_newend, i_start, i_end))
                             conflict_detected = True
                             conflicting_schedule = schedule
                             
