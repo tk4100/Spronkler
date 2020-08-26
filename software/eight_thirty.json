@@ -1,6 +1,6 @@
 {
    "name":"Eight Thirty",
-   "start_time":"01-01T08:30:00",
+   "start_time":"01-01T08:33:00",
    "end_time":"12-31T23:59:59",
    "interval_minutes":1440,
    "enabled":"true",
