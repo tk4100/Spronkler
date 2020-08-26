@@ -424,6 +424,8 @@ class Spronkler():
                         if time.time() - self.schedules[i]['lastrun'] > self.schedules[i]['interval_minutes'] * 60:
                             self.schedules[i]['running'] = False
                             
+                        i += 1
+                            
                     
         def __scheduleRunnerThread(self, schedule):
             self.log("Runner thread '{}' spawned.".format(schedule['name']))
