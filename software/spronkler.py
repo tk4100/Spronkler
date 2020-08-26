@@ -551,6 +551,9 @@ with open("rainbird.json", "r") as fh:
     
 with open("a_few_minutes_at_the_end_of_each_hour.json", "r") as fh:
     flerp.scheduleDaemon.addSchedule(json.load(fh))
+    
+with open("eight_thirty.json", "r") as fh:
+    flerp.scheduleDaemon.addSchedule(json.load(fh))
 
 print("Currently active schedules:")
 print(flerp.scheduleDaemon.listSchedules())
