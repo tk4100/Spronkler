@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import time
 import datetime
+import pytz
 import json
 import threading
 import zmq
@@ -74,7 +75,7 @@ class Spronkler():
         def log(self, message):
             try:
                 with open("logs/{}.log".format(self.threadname), "a") as logh:
-                    message = "[{}]: {}\n".format(datetime.datetime.now(), message)
+                    message = "[{}]: {}\n".format(datetime.datetime.now(tz=self.tz), message)
                     logh.write(message)
             except:
                 print("FAILED TO LOG MESSAGE!  Too bad you won't see this when I'm a daemon :(")
@@ -261,6 +262,7 @@ class Spronkler():
             # some tunables and holders
             self.dateformat = '%m-%dT%H:%M:%S'
             self.schedules = []
+            self.tz = pytz.timezone("America/Los_Angeles")
 
             #start the thread
             self.__daemonThread.start()
@@ -374,7 +376,7 @@ class Spronkler():
                             
                             #advance next run to the frist time this schedule runs *after* now
                             while msg.schedule['nextrun'] < time.time():
-                                msg.schedule['nextrun'] += (int(msg.schedule['interval_minutes']) * 60)
+                                msg.schedule['nextrun'] += msg.schedule['interval_minutes']) * 60
                             
                             self.schedules.append(msg.schedule)
                         msg = conflict_result
@@ -412,7 +414,7 @@ class Spronkler():
                         start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat)
                         end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat)
                         
-                        now_raw = datetime.datetime.now()
+                        now_raw = datetime.datetime.now(tz=self.tz)
                         now = datetime.datetime.strptime(now_raw.isoformat(timespec='seconds'), "{}-".format(now_raw.year) + self.dateformat)
                         
                         # first make sure we're in the window
