@@ -374,7 +374,6 @@ class Spronkler():
                             
                             #advance next run to the frist time this schedule runs *after* now
                             while msg.schedule['nextrun'] < time.time():
-                                print(msg.schedule['nextrun'])
                                 msg.schedule['nextrun'] += (msg.schedule['interval_minutes'] * 60)
                             
                             self.schedules.append(msg.schedule)
@@ -478,7 +477,7 @@ class Spronkler():
             if isinstance(msg, self.MsgNAK):
                 self.log("Failed to set schedule: {}".format(msg.reason))
             else:
-                self.log("Added schedule successfully!")
+                self.log("Added schedule '{}' successfully!  Next run at {}.".format(schedule['name'], datetime.fromtimestamp(schedule['nextrun'])))
 
             sock.close()
             
