@@ -375,7 +375,6 @@ class Spronkler():
                             #advance next run to the frist time this schedule runs *after* now
                             while msg.schedule['nextrun'] < time.time():
                                 msg.schedule['nextrun'] += msg.schedule['interval_minutes'] * 60
-                                print(time.time(), msg.schedule['nextrun'])
                             
                             self.schedules.append(msg.schedule)
                         msg = conflict_result
