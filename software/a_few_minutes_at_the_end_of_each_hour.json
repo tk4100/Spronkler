@@ -1,0 +1,14 @@
+{
+   "name":"A few minutes at the end of each hour",
+   "start_time":"01-01T00:50:00",
+   "end_time":"12-31T23:59:59",
+   "interval_minutes":45,
+   "enabled":"true",
+   "schedule":{
+      "1":1,
+      "2":1,
+      "3":1,
+      "4":1,
+      "5":1
+   }
+}

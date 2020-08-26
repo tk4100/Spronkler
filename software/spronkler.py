@@ -402,16 +402,6 @@ class Spronkler():
                     # iterate through live schedules, and if there is one due for triggering, pass its channel/time list
                     # to a thread which will execute it 
                     
-                    ######## !!!!!!!!!!!!! ###########
-                    
-                    # THIS NEEDS RETOOLING:  The start and end times used are the time of year start and ends, we need to deal with the dailies
-                    # here.  Probably project start times forward into the future and trigger once on the appropriate one?
-                    
-                    # Orrr, maybe just blindly pass all conflict-checked schedules into a runner thread, which has to sort out start times
-                    # etc. for itself.  Thread reaping becomes an issue at that point, we don't want ghostly schedules running.
-                    
-                    ######## !!!!!!!!!!!!! ###########
-                    
                     i = 0
                     while i < len(self.schedules):
                         start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat)
@@ -420,6 +410,7 @@ class Spronkler():
                         now_raw = datetime.datetime.now()
                         now = datetime.datetime.strptime(now_raw.isoformat(timespec='seconds'), "{}-".format(now_raw.year) + self.dateformat)
                         
+                        # We're relying on the fact that there aren't too many requests to ensure we catch the schedule near to it's start time
                         if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
                             self.__runSchedule(self.schedules[i])
                             self.schedules[i]['running'] = True
@@ -552,10 +543,11 @@ with open("rainbird2.json", "r") as fh:
     
 flerp.scheduleDaemon.addSchedule(schedule)
 '''
-with open("every_goddamn_minute.json", "r") as fh:
-    schedule = json.load(fh)
+with open("rainbird.json", "r") as fh:
+    flerp.scheduleDaemon.addSchedule(json.load(fh))
     
-flerp.scheduleDaemon.addSchedule(schedule)
+with open("a_few_minutes_at_the_end_of_each_hour.json", "r") as fh:
+    flerp.scheduleDaemon.addSchedule(json.load(fh))
 
 print("Currently active schedules:")
 print(flerp.scheduleDaemon.listSchedules())
