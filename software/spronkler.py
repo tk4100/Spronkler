@@ -370,7 +370,12 @@ class Spronkler():
                         if isinstance(conflict_result, self.MsgACK):
                             # add in internal tracking entries
                             msg.schedule['running'] = False
-                            msg.schedule['lastrun'] = 0
+                            msg.schedule['nextrun'] = 0
+                            
+                            #advance next run to the frist time this schedule runs *after* now
+                            while msg.schedule['nextrun'] < time.time():
+                                msg.schedule['nextrun'] += (int(msg.schedlule['interval_minutes'] * 60))
+                            
                             self.schedules.append(msg.schedule)
                         msg = conflict_result
                            
@@ -413,15 +418,14 @@ class Spronkler():
                         # first make sure we're in the window
                         if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
                         
-                            # then make sure we're close the the start hour/minute
-                            self.log("{} timedelta: {}:{}".format(self.schedules[i]['name'], now.hour - start_time.hour, abs(now.minute - start_time.minute)))
-                            if now.hour == start_time.hour and now.minute - start_time.minute < 5 and now.minute - start_time.minute >=0:
+                            # if we're past the nextstart time, fire off the thread and update lastrun and nextrun
+                            if time.time() > self.schedules[i]['nextrun']:
                                 self.__runSchedule(self.schedules[i])
                                 self.schedules[i]['running'] = True
-                                self.schedules[i]['lastrun'] = time.time()
+                                self.schedules[i]['nextrun'] += self.schedules[i]['interval_minutes'] * 60
                             
                         # schedules get one chance to fire during their window.  Once the end of the window has come, reset the schedule's "running" status
-                        if time.time() - self.schedules[i]['lastrun'] > self.schedules[i]['interval_minutes'] * 60:
+                        if time.time() > self.schedules[i]['nextrun']:
                             self.schedules[i]['running'] = False
                             
                         i += 1
