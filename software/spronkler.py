@@ -477,7 +477,7 @@ class Spronkler():
             if isinstance(msg, self.MsgNAK):
                 self.log("Failed to set schedule: {}".format(msg.reason))
             else:
-                self.log("Added schedule '{}' successfully!  Next run at {}.".format(schedule['name'], datetime.fromtimestamp(schedule['nextrun'])))
+                self.log("Added schedule '{}' successfully!  Next run at {}.".format(schedule['name'], datetime.datetime.fromtimestamp(schedule['nextrun'])))
 
             sock.close()
             
