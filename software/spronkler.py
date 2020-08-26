@@ -414,7 +414,7 @@ class Spronkler():
                         if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
                         
                             # then make sure we're close the the start hour/minute
-                            self.log("Timedelta: {}:{}".format(now.hour - start_time.hour, abs(now.minute - start_time.minute)))
+                            self.log("{} timedelta: {}:{}".format(schedule['name'], now.hour - start_time.hour, abs(now.minute - start_time.minute)))
                             if now.hour == start_time.hour and abs(now.minute - start_time.minute) < 5:
                                 self.__runSchedule(self.schedules[i])
                                 self.schedules[i]['running'] = True
