@@ -372,15 +372,15 @@ class Spronkler():
                         if isinstance(conflict_result, self.MsgACK):
                             # add in internal tracking entries
                             msg.schedule['running'] = False
-                            msg.schedule['nextrun'] = int(datetime.datetime.strptime(msg.schedule['start_time'], self.dateformat).replace(year=datetime.datetime.utcnow().year, tzinfo=pytz.utc).timestamp()) - 365 * 24 * 60 * 60
+                            msg.schedule['nextrun'] = int(datetime.datetime.strptime(msg.schedule['start_time'], self.dateformat).replace(year=datetime.datetime.utcnow().year).timestamp()) - 365 * 24 * 60 * 60
                             
                             #advance next run to the first time this schedule runs *after* now!
                             nowstamp = int(time.time())
                             interval = int(msg.schedule['interval_minutes'])
                             while msg.schedule['nextrun'] < nowstamp:
                                 addtime = interval * 60
-                                if msg.schedule['name'] == "Eight Thirty":
-                                    self.log("{}, {}".format(addtime, datetime.datetime.fromtimestamp(msg.schedule['nextrun']).astimezone(pytz.timezone("America/Los_Angeles"))))
+                                #if msg.schedule['name'] == "Eight Thirty":
+                                    #self.log("{}, {}".format(addtime, datetime.datetime.fromtimestamp(msg.schedule['nextrun']).astimezone(pytz.timezone("America/Los_Angeles"))))
                                 msg.schedule['nextrun'] += addtime
                      
                             self.schedules.append(msg.schedule)
