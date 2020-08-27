@@ -375,7 +375,6 @@ class Spronkler():
                             
                             
                             self.log(datetime.datetime.fromtimestamp(msg.schedule['nextrun']))
-                            self.log(type(msg.schedule['nextrun']))
                             
                             #advance next run to the first time this schedule runs *after* now!
                             while msg.schedule['nextrun'] < time.time():
@@ -383,7 +382,6 @@ class Spronkler():
                                 msg.schedule['nextrun'] += addtime
                             
                             self.log(datetime.datetime.fromtimestamp(msg.schedule['nextrun']))
-                            self.log(type(msg.schedule['nextrun']))
                             
                             self.schedules.append(msg.schedule)
                         msg = conflict_result
