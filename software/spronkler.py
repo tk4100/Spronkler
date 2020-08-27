@@ -483,7 +483,7 @@ class Spronkler():
             if isinstance(msg, self.MsgNAK):
                 self.log("Failed to set schedule: {}".format(msg.reason))
             else:
-                self.log("Added schedule '{}' successfully!  Next run at {}.".format(self.schedules[-1]['name'], datetime.datetime.fromtimestamp(self.schedules[-1]['nextrun']).astimezone(pytz.timezone('America/Los_Angeles'))
+                self.log("Added schedule '{}' successfully!  Next run at {}.".format(self.schedules[-1]['name'], datetime.datetime.fromtimestamp(self.schedules[-1]['nextrun']).astimezone(pytz.timezone('America/Los_Angeles'))))
 
             sock.close()
             
