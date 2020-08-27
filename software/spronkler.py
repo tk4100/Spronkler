@@ -379,7 +379,7 @@ class Spronkler():
                             
                             #advance next run to the first time this schedule runs *after* now
                             while msg.schedule['nextrun'] < time.time():
-                                addtime =  * 60
+                                addtime = msg.schedule['nextrun'] * 60
                                 msg.schedule['nextrun'] += addtime
                             
                             self.log(datetime.datetime.fromtimestamp(msg.schedule['interval_minutes']))
