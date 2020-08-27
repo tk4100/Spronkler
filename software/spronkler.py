@@ -296,8 +296,8 @@ class Spronkler():
             conflict_detected = False
             for schedule in self.schedules:
                 # check if the run windows overlap.
-                start = datetime.datetime.strptime(schedule["start_time"], self.dateformat).replace(tzinfo=pytz.timezone("America/Los_Angeles"))
-                end = datetime.datetime.strptime(schedule["end_time"], self.dateformat).replace(tzinfo=pytz.timezone("America/Los_Angeles"))
+                start = datetime.datetime.strptime(schedule["start_time"], self.dateformat).astimezone(pytz.timezone("America/Los_Angeles"))
+                end = datetime.datetime.strptime(schedule["end_time"], self.dateformat).astimezone(pytz.timezone("America/Los_Angeles"))
                 if end < start:
                     end = end + datetime.timedelta(days=365)
                     
@@ -379,8 +379,6 @@ class Spronkler():
                             interval = int(msg.schedule['interval_minutes'])
                             while msg.schedule['nextrun'] < nowstamp:
                                 addtime = interval * 60
-                                if msg.schedule['name'] == "Eight Thirty":
-                                    self.log("{}, {}".format(addtime, datetime.datetime.fromtimestamp(msg.schedule['nextrun'])))
                                 msg.schedule['nextrun'] += addtime
                      
                             self.schedules.append(msg.schedule)
