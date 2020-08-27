@@ -380,8 +380,8 @@ class Spronkler():
                             while msg.schedule['nextrun'] < time.time():
                                 addtime = msg.schedule['nextrun'] * 60
                                 msg.schedule['nextrun'] += addtime
+                                self.log(datetime.datetime.fromtimestamp(msg.schedule['nextrun']))
                             
-                            self.log(datetime.datetime.fromtimestamp(msg.schedule['nextrun']))
                             
                             self.schedules.append(msg.schedule)
                         msg = conflict_result
