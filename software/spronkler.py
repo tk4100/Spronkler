@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import time
 import datetime
+import pytz
 import json
 import threading
 import zmq
@@ -371,7 +372,7 @@ class Spronkler():
                         if isinstance(conflict_result, self.MsgACK):
                             # add in internal tracking entries
                             msg.schedule['running'] = False
-                            msg.schedule['nextrun'] = int(datetime.datetime.strptime(msg.schedule['start_time'], self.dateformat).replace(year=datetime.datetime.utcnow().year).timestamp()) - 365 * 24 * 60 * 60
+                            msg.schedule['nextrun'] = int(datetime.datetime.strptime(msg.schedule['start_time'], self.dateformat).replace(year=datetime.datetime.utcnow().year, tzinfo=pytz.utc).timestamp()) - 365 * 24 * 60 * 60
                             
                             #advance next run to the first time this schedule runs *after* now!
                             nowstamp = int(time.time())
