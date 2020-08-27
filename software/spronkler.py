@@ -416,10 +416,10 @@ class Spronkler():
                     
                     i = 0
                     while i < len(self.schedules):
-                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat)#.astimezone(pytz.utc)
-                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat)#.astimezone(pytz.utc)
+                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat).astimezone(pytz.utc).replace(year=2000)
+                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat).astimezone(pytz.utc).replace(year=2000)
                         
-                        now = datetime.datetime.utcnow().replace(year=1900, tzinfo=pytz.utc)
+                        now = datetime.datetime.utcnow().replace(year=2000, tzinfo=pytz.utc)
                         
                         # first make sure we're in the window
                         if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
