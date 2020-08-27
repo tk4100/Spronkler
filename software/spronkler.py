@@ -271,8 +271,8 @@ class Spronkler():
         def __conflictCheck(self, newschedule):
             # unroll the new schedule's start and end times
 
-            newstart = datetime.datetime.strptime(newschedule["start_time"], self.dateformat).replace(tzinfo=pytz.timezone("America/Los_Angeles")
-            newend = datetime.datetime.strptime(newschedule["end_time"], self.dateformat).replace(tzinfo=pytz.timezone("America/Los_Angeles")
+            newstart = datetime.datetime.strptime(newschedule["start_time"], self.dateformat).replace(tzinfo=pytz.timezone("America/Los_Angeles"))
+            newend = datetime.datetime.strptime(newschedule["end_time"], self.dateformat).replace(tzinfo=pytz.timezone("America/Los_Angeles"))
             print(newstart)
             if newend < newstart:
                 newend = newend + datetime.timedelta(days=365)
