@@ -371,7 +371,7 @@ class Spronkler():
                         if isinstance(conflict_result, self.MsgACK):
                             # add in internal tracking entries
                             msg.schedule['running'] = False
-                            msg.schedule['nextrun'] = datetime.datetime.timestamp(datetime.datetime.strptime(msg.schedule['start_time'], self.dateformat).replace(year=datetime.datetime.now().year))
+                            msg.schedule['nextrun'] = time.time() - 365 * 24 * 60 * 60
                             
                             #advance next run to the first time this schedule runs *after* now!
                             while msg.schedule['nextrun'] < time.time():
