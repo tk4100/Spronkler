@@ -270,8 +270,8 @@ class Spronkler():
         # validates whether or not a new schedule will conflict with *any* schedule currently enabled.
         def __conflictCheck(self, newschedule):
             # unroll the new schedule's start and end times
-            newstart = datetime.datetime.strptime(newschedule["start_time"], self.dateformat).replace(tzinfo=pytz.timezone("America/Los_Angeles"))
-            newend = datetime.datetime.strptime(newschedule["end_time"], self.dateformat).replace(tzinfo=pytz.timezone("America/Los_Angeles"))
+            newstart = datetime.datetime.strptime(newschedule["start_time"], self.dateformat).replace(year=2000, tzinfo=pytz.timezone("America/Los_Angeles"))
+            newend = datetime.datetime.strptime(newschedule["end_time"], self.dateformat).replace(year=2000, tzinfo=pytz.timezone("America/Los_Angeles"))
             print(newstart)
             if newend < newstart:
                 newend = newend + datetime.timedelta(days=365)
@@ -296,8 +296,8 @@ class Spronkler():
             conflict_detected = False
             for schedule in self.schedules:
                 # check if the run windows overlap.
-                start = datetime.datetime.strptime(schedule["start_time"], self.dateformat).astimezone(pytz.timezone("America/Los_Angeles"))
-                end = datetime.datetime.strptime(schedule["end_time"], self.dateformat).astimezone(pytz.timezone("America/Los_Angeles"))
+                start = datetime.datetime.strptime(schedule["start_time"], self.dateformat).replace(year=2000).astimezone(pytz.timezone("America/Los_Angeles"))
+                end = datetime.datetime.strptime(schedule["end_time"], self.dateformat).replace(year=2000).astimezone(pytz.timezone("America/Los_Angeles"))
                 if end < start:
                     end = end + datetime.timedelta(days=365)
                     
