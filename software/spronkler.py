@@ -416,8 +416,8 @@ class Spronkler():
                     
                     i = 0
                     while i < len(self.schedules):
-                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat).astimezone(pytz.utc).replace(year=2000)
-                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat).astimezone(pytz.utc).replace(year=2000)
+                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat).replace(year=2000).astimezone(pytz.utc)
+                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat).replace(year=2000).astimezone(pytz.utc)
                         
                         now = datetime.datetime.utcnow().replace(year=2000, tzinfo=pytz.utc)
                         
