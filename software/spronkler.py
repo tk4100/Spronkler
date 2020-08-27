@@ -380,7 +380,7 @@ class Spronkler():
                             while msg.schedule['nextrun'] < nowstamp:
                                 addtime = interval * 60
                                 if msg.schedule['name'] == "Eight Thirty":
-                                    self.log("{}, {}".format(addtime, datetime.datetime.fromtimestamp(msg.schedule['nextrun']).astimezone(tzinfo=pytz.utc)))
+                                    self.log("{}, {}".format(addtime, datetime.datetime.fromtimestamp(msg.schedule['nextrun']).astimezone(pytz.timezones("America/Los_Angeles"))))
                                 msg.schedule['nextrun'] += addtime
                      
                             self.schedules.append(msg.schedule)
