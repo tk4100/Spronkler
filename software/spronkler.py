@@ -373,10 +373,17 @@ class Spronkler():
                             msg.schedule['running'] = False
                             msg.schedule['nextrun'] = datetime.datetime.timestamp(datetime.datetime.strptime(msg.schedule['start_time'], self.dateformat).replace(year=datetime.datetime.now().year))
                             
+                            
+                            self.log(datetime.datetime.fromtimestamp(msg.schedule['interval_minutes']))
+                            self.log(type(msg.schedule['nextrun']))
+                            
                             #advance next run to the first time this schedule runs *after* now
                             while msg.schedule['nextrun'] < time.time():
-                                addtime = msg.schedule['interval_minutes'] * 60
+                                addtime =  * 60
                                 msg.schedule['nextrun'] += addtime
+                            
+                            self.log(datetime.datetime.fromtimestamp(msg.schedule['interval_minutes']))
+                            self.log(type(msg.schedule['nextrun']))
                             
                             self.schedules.append(msg.schedule)
                         msg = conflict_result
