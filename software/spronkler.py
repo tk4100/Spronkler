@@ -376,7 +376,7 @@ class Spronkler():
                             #advance next run to the first time this schedule runs *after* now!
                             while msg.schedule['nextrun'] < time.time():
                                 addtime = msg.schedule['nextrun'] * 60
-                                self.log(addtime, datetime.datetime.fromtimestamp(msg.schedule['nextrun']))
+                                self.log("{}, {}".format(addtime, datetime.datetime.fromtimestamp(msg.schedule['nextrun'])))
                                 msg.schedule['nextrun'] += addtime
                      
                             self.schedules.append(msg.schedule)
