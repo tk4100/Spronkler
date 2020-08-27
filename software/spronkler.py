@@ -270,8 +270,8 @@ class Spronkler():
         # validates whether or not a new schedule will conflict with *any* schedule currently enabled.
         def __conflictCheck(self, newschedule):
             # unroll the new schedule's start and end times
-            newstart = datetime.datetime.strptime(newschedule["start_time"], self.dateformat)
-            newend = datetime.datetime.strptime(newschedule["end_time"], self.dateformat)
+            newstart = datetime.datetime.strptime(newschedule["start_time"], self.dateformat).replace(tzinfo=pytz.utc)
+            newend = datetime.datetime.strptime(newschedule["end_time"], self.dateformat).replace(tzinfo=pytz.utc)
             print(newstart)
             if newend < newstart:
                 newend = newend + datetime.timedelta(days=365)
@@ -296,8 +296,8 @@ class Spronkler():
             conflict_detected = False
             for schedule in self.schedules:
                 # check if the run windows overlap.
-                start = datetime.datetime.strptime(schedule["start_time"], self.dateformat)
-                end = datetime.datetime.strptime(schedule["end_time"], self.dateformat)
+                start = datetime.datetime.strptime(schedule["start_time"], self.dateformat).replace(tzinfo=pytz.utc)
+                end = datetime.datetime.strptime(schedule["end_time"], self.dateformat).replace(tzinfo=pytz.utc)
                 if end < start:
                     end = end + datetime.timedelta(days=365)
                     
@@ -380,7 +380,7 @@ class Spronkler():
                             while msg.schedule['nextrun'] < nowstamp:
                                 addtime = interval * 60
                                 if msg.schedule['name'] == "Eight Thirty":
-                                    self.log("{}, {}".format(addtime, datetime.datetime.fromtimestamp(msg.schedule['nextrun'])))
+                                    self.log("{}, {}".format(addtime, datetime.datetime.fromtimestamp(msg.schedule['nextrun']).astimezone(tzinfo=pytz.utc)))
                                 msg.schedule['nextrun'] += addtime
                      
                             self.schedules.append(msg.schedule)
@@ -416,10 +416,10 @@ class Spronkler():
                     
                     i = 0
                     while i < len(self.schedules):
-                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat)
-                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat)
+                        start_time = datetime.datetime.strptime(self.schedules[i]['start_time'], self.dateformat).replace(tzinfo=pytz.utc)
+                        end_time = datetime.datetime.strptime(self.schedules[i]['end_time'], self.dateformat).replace(tzinfo=pytz.utc)
                         
-                        now = datetime.datetime.now().replace(year=1900)
+                        now = datetime.datetime.utcnow().replace(year=1900)
                         
                         # first make sure we're in the window
                         if start_time <= now and end_time > now and self.schedules[i]['running'] == False:
@@ -483,7 +483,7 @@ class Spronkler():
             if isinstance(msg, self.MsgNAK):
                 self.log("Failed to set schedule: {}".format(msg.reason))
             else:
-                self.log("Added schedule '{}' successfully!  Next run at {}.".format(self.schedules[-1]['name'], datetime.datetime.fromtimestamp(self.schedules[-1]['nextrun'])))
+                self.log("Added schedule '{}' successfully!  Next run at {}.".format(self.schedules[-1]['name'], datetime.datetime.fromtimestamp(self.schedules[-1]['nextrun']).astimezone(pytz.timezone('America/Los_Angeles'))
 
             sock.close()
             
